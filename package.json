@@ -1,0 +1,31 @@
+{
+  "name": "t3c",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Command-line client for T3 Code servers. Pairs like any other client.",
+  "type": "module",
+  "bin": {
+    "t3c": "./src/main.ts"
+  },
+  "imports": {
+    "#contracts": "./vendor/t3code/packages/contracts/src/index.ts"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/main.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@effect/platform-node": "4.0.0-rc.115",
+    "effect": "4.0.0-rc.115"
+  },
+  "devDependencies": {
+    "@effect/vitest": "4.0.0-rc.115",
+    "@types/node": "24.12.4",
+    "typescript": "7.0.2",
+    "vitest": "^5"
+  }
+}

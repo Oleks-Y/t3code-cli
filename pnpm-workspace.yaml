@@ -1,0 +1,3 @@
+# Same effect patch the pinned t3code server runs with; it changes RPC stream handling.
+patchedDependencies:
+  "effect@4.0.0-rc.115": vendor/t3code/patches/effect@4.0.0-rc.115.patch
