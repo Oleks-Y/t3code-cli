@@ -180,17 +180,23 @@ export const formatProjectList = (
 
 export const formatThreadList = (
   snapshot: OrchestrationShellSnapshot,
-  options: { readonly json: boolean; readonly projectId?: ProjectId },
+  options: {
+    readonly json: boolean;
+    readonly projectId?: ProjectId;
+    readonly includeSettled?: boolean;
+  },
 ): string => {
   const projects = new Map(snapshot.projects.map((project) => [project.id, project.title]));
   const entries = snapshot.threads
     .filter((thread) => options.projectId === undefined || thread.projectId === options.projectId)
+    // Settled ("Done") threads live in the sidebar's collapsed Settled section.
+    .filter((thread) => options.includeSettled || thread.settledOverride !== "settled")
     .map((thread) => ({
       id: thread.id,
       projectId: thread.projectId,
       projectTitle: projects.get(thread.projectId) ?? thread.projectId,
       title: thread.title,
-      status: threadStatus(thread),
+      status: thread.settledOverride === "settled" ? "settled" : threadStatus(thread),
       updatedAt: thread.updatedAt,
     }));
   if (options.json) return prettyJson(entries);
@@ -443,9 +449,13 @@ const threadListCommand = Command.make("list", {
     Flag.withDescription("Limit results to a project id or workspace path."),
     Flag.optional,
   ),
+  all: Flag.Boolean("all").pipe(
+    Flag.withDescription("Include settled threads."),
+    Flag.withDefault(false),
+  ),
   json: jsonFlag,
 }).pipe(
-  Command.withDescription("List active threads."),
+  Command.withDescription("List active threads. Settled threads are hidden unless --all is set."),
   Command.withHandler((flags) =>
     withRpcClient((client) =>
       Effect.gen(function* () {
@@ -456,6 +466,7 @@ const threadListCommand = Command.make("list", {
         yield* Console.log(
           formatThreadList(snapshot, {
             json: flags.json,
+            includeSettled: flags.all,
             ...(projectId === undefined ? {} : { projectId }),
           }),
         );

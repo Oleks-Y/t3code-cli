@@ -36,7 +36,7 @@ where you can revoke it. `t3c logout` forgets it locally. The session is stored 
 t3c project list
 t3c thread models                  # models and their thinking levels
 t3c usage                          # how much of each subscription window is left
-t3c thread list [--project <id|path>]
+t3c thread list [--project <id|path>] [--all]   # --all includes settled ("Done") threads
 t3c thread create --project . --title "Fix flaky tests" \
   --model codex/gpt-5.6-sol --thinking high --access approval-required
 t3c thread show <thread-id> [--turns 10]

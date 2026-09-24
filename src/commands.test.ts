@@ -132,6 +132,21 @@ it("formats projects and threads for terminal use", () => {
   );
 });
 
+it("hides settled threads unless asked for all", () => {
+  const snapshot = {
+    ...shellSnapshot,
+    threads: [
+      ...shellSnapshot.threads,
+      { ...thread, id: "thread-done", title: "Done thread", settledOverride: "settled" },
+    ],
+  } as unknown as OrchestrationShellSnapshot;
+  assert.notInclude(formatThreadList(snapshot, { json: false }), "thread-done");
+  assert.include(
+    formatThreadList(snapshot, { json: false, includeSettled: true }),
+    "thread-done\tsettled\tT3 Code\tDone thread",
+  );
+});
+
 it("formats thread details with recent messages", () => {
   const output = formatThreadDetail(detailSnapshot, shellSnapshot, { json: false });
   assert.include(output, "Project: T3 Code");
