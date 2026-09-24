@@ -30,25 +30,34 @@ Pairing tokens work once. The session lasts 30 days and shows up in the server's
 where you can revoke it. `t3c logout` forgets it locally. The session is stored in
 `$XDG_CONFIG_HOME/t3c/server.json` (default `~/.config/t3c/server.json`), readable only by you.
 
-## Commands
+## Usage
 
 ```bash
+t3c status                                  # paired server, version, session expiry
+t3c thread new "Fix the flaky tests"        # new thread in the project containing this directory
+t3c thread new -p backend -m claude-opus-5-5 -t high --wait "Review the last commit"
+git diff | t3c thread new --title "Review diff" -   # "-" reads the message from stdin
+t3c thread list                             # most recent first; --all adds settled threads
+t3c thread show 64f5                        # status, recent messages, pending approvals
+t3c thread send 64f5 --wait "Summarize the changes" > summary.md
+t3c thread approve 64f5                     # or: deny
+t3c thread stop 64f5                        # interrupt the running turn
+t3c thread settle 64f5                      # mark done; archive removes it entirely
 t3c project list
-t3c thread models                  # models and their thinking levels
-t3c usage                          # how much of each subscription window is left
-t3c thread list [--project <id|path>] [--all]   # --all includes settled ("Done") threads
-t3c thread create --project . --title "Fix flaky tests" \
-  --model codex/gpt-5.6-sol --thinking high --access approval-required
-t3c thread show <thread-id> [--turns 10]
-t3c thread send <thread-id> "Continue with the focused tests"
-t3c thread stop <thread-id>
-t3c thread archive <thread-id>
+t3c models                                  # models and their thinking levels
+t3c usage                                   # how much of each subscription window is left
 ```
 
-Every command accepts `--json`. `--access` is one of `approval-required`, `auto-accept-edits`,
-`auto`, or `full-access`. Project paths resolve on the machine running `t3c`, so `--project .`
-only matches when the server shares that filesystem; use the project id from `t3c project list`
-for remote servers.
+- **Ids**: tables show 8-character ids. Any unique prefix works, like short git hashes.
+- **Projects**: `--project` takes an id, a name, or a path. A path matches the project that
+  contains it, so it only works when the server shares this machine's filesystem.
+- **New threads**: model, thinking level, and `--access` default to the project's most recent
+  thread. The server generates the title from the first message unless you pass `--title`.
+  `--access` is one of `approval-required`, `auto-accept-edits`, `auto`, or `full-access`.
+- **`--wait`**: streams the agent's reply to stdout and exits when the turn ends. Status lines go
+  to stderr. The exit code is 1 unless the turn completes, including when it stops to wait for an
+  approval.
+- **`--json`**: every command accepts it.
 
 ## Staying in sync with the server
 
