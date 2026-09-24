@@ -59,6 +59,16 @@ t3c usage                                   # how much of each subscription wind
   approval.
 - **`--json`**: every command accepts it.
 
+## Agent skill
+
+`skills/using-t3c` teaches coding agents to delegate work through `t3c` the way T3 Code is meant to
+be used: one thread per task, an explicit access mode, approvals and questions left to you, and
+finished work settled. Install it for Claude Code with:
+
+```bash
+ln -sf "$PWD/skills/using-t3c" ~/.claude/skills/using-t3c
+```
+
 ## Staying in sync with the server
 
 `t3c` uses the server's own wire contracts from `vendor/t3code`, a submodule pinned to a T3 Code
