@@ -12,8 +12,11 @@ Requires Node 24 and pnpm.
 git clone --recurse-submodules --shallow-submodules <this-repo> t3code-cli
 cd t3code-cli
 pnpm install
-pnpm link --global   # puts `t3c` on your PATH
+ln -sf "$PWD/src/main.ts" ~/.local/bin/t3c   # any directory on your PATH
 ```
+
+Link the file rather than installing the package globally: Node does not run TypeScript from inside
+`node_modules`, and pnpm 11 removed `pnpm link --global`.
 
 ## Pair
 
